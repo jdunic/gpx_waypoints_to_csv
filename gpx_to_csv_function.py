@@ -40,36 +40,10 @@ for f in os.listdir(os.getcwd()):
     gpx_to_csv(output_name = f + '.csv', gpx_filename = f)
 
 
-def gpx_to_csv(output_name, gpx_filename):
-    gpx_file = open(gpx_filename, 'r')
-    gpx = gpxpy.parse(gpx_file)
-    with open(output_name, "w") as f:
-        writer = csv.writer(f, delimiter = ',')
-        writer.writerow(['waypoint', 'lat', 'long', 'date', 'time'])
-        for w in gpx.waypoints:
-            name = w.name
-            lat = w.latitude
-            lon = w.longitude
-            date = w.time.strftime("%Y-%m-%d")
-            time = w.time.strftime("%H:%M:%S")
-            row = [name, lat, lon, date, time]
-            writer.writerow(row)
-
-
-def gpx_to_csv(output_name, gpx_filenames):
-    for filename in gpx_filenames:
-        gpx_file = open(filename, 'r')
-        gpx = gpxpy.parse(gpx_file)
-    with open(output_name, 'w') as f:
-        writer = csv.writer(f, delimiter = ',')
-        writer.writerow(['waypoint', 'lat', 'long', 'date', 'time'])
-        for w in gpx.waypoints:
-            wps = [w.name, w.latitude, w.longitude, w.time.strftime("%Y-%m-%d"), 
-                   w.time.strftime("%H:%M:%S")]
-
 def gpx_to_csv(output_name, gpx_filenames = None):
+    if isinstance(gpx_filenames, list) is False:
+        gpx_filenames = [gpx_filenames] 
     wp_list = []
-    print(gpx_filenames)
     for filename in gpx_filenames:
         print(filename)
         gpx_file = open(filename, 'r')
@@ -90,6 +64,7 @@ def gpx_to_csv(output_name, gpx_filenames = None):
         writer = csv.DictWriter(f, keys)
         writer.writeheader()
         writer.writerows(wp_list)
+
 
 
 
