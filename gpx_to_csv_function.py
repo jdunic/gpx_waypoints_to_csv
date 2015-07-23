@@ -20,6 +20,8 @@
 #Extract GPX file data into csv
 
 # Load libraries
+import os
+
 import gpxpy
 import gpxpy.gpx
 
@@ -27,25 +29,73 @@ import csv
 import time
 from datetime import date
 
-output_csv_filename = "Byrnes_team_dive_lab_waypoints_%s.csv" % date.today()
-gpx_file = open('Recently Read from GPSMAP 78sc (Unit ID 3862238161)_Dec_2014.GPX', 'r')
+files = os.listdir
 
-gpx = gpxpy.parse(gpx_file)
+for f in os.listdir('/Users/jillian/Desktop/gps_conversion_py_work/GPS2_downloads/2015_JULY_16'):
+    gpx_to_csv(output_name = f + '.csv')
 
-#filename = 
+os.chdir('/Users/jillian/Desktop/gps_conversion_py_work/GPS2_downloads/2015_JULY_16')
 
-def gpx_to_csv():
-with open(output_csv_filename, "w") as f:
-    writer = csv.writer(f, delimiter = ',')
-    writer.writerow(['waypoint', 'lat', 'long', 'date', 'time'])
-    for w in gpx.waypoints:
-        name = w.name
-        lat = w.latitude
-        lon = w.longitude
-        date = w.time.strftime("%Y-%m-%d")
-        time = w.time.strftime("%H:%M:%S")
-        row = [name, lat, lon, date, time]
-        writer.writerow(row)
+for f in os.listdir(os.getcwd()):
+    gpx_to_csv(output_name = f + '.csv', gpx_filename = f)
+
+
+def gpx_to_csv(output_name, gpx_filename):
+    gpx_file = open(gpx_filename, 'r')
+    gpx = gpxpy.parse(gpx_file)
+    with open(output_name, "w") as f:
+        writer = csv.writer(f, delimiter = ',')
+        writer.writerow(['waypoint', 'lat', 'long', 'date', 'time'])
+        for w in gpx.waypoints:
+            name = w.name
+            lat = w.latitude
+            lon = w.longitude
+            date = w.time.strftime("%Y-%m-%d")
+            time = w.time.strftime("%H:%M:%S")
+            row = [name, lat, lon, date, time]
+            writer.writerow(row)
+
+
+def gpx_to_csv(output_name, gpx_filenames):
+    for filename in gpx_filenames:
+        gpx_file = open(filename, 'r')
+        gpx = gpxpy.parse(gpx_file)
+    with open(output_name, 'w') as f:
+        writer = csv.writer(f, delimiter = ',')
+        writer.writerow(['waypoint', 'lat', 'long', 'date', 'time'])
+        for w in gpx.waypoints:
+            wps = [w.name, w.latitude, w.longitude, w.time.strftime("%Y-%m-%d"), 
+                   w.time.strftime("%H:%M:%S")]
+
+def gpx_to_csv(output_name, gpx_filenames = None):
+    wp_list = []
+    print(gpx_filenames)
+    for filename in gpx_filenames:
+        print(filename)
+        gpx_file = open(filename, 'r')
+        gpx = gpxpy.parse(gpx_file)
+        for w in gpx.waypoints:
+            wp_dict = {
+                'waypoint': w.name, 
+                'lat': w.latitude,
+                'long': w.longitude,
+                'date': w.time.strftime("%Y-%m-%d"),
+                'time': w.time.strftime("%H:%M:%S")
+            }
+            wp_list.append(wp_dict)
+    return(wp_list)
+
+    keys = wp_list[0].keys()
+    with open(output_name, 'w') as f:
+        writer = csv.DictWriter(f, keys)
+        writer.writeheader()
+        writer.writerows(wp_list)
+
+
+
+
+
+'GPS2_downloads/2015_JULY_16/Waypoints_06-AUG-14.gpx'
 
 
 #6.28.8.1 Basic example - log to a file
