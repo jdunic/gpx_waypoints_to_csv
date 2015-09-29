@@ -32,15 +32,18 @@ def get_input_data():
     if username == 'exit':
         return None
     gpx_filename = raw_input("Enter the gpx file path: ")
-    gpx_filename = gpx_filename.rstrip()
+    gpx_filename = gpx_filename.replace('\\', '')
+    gpx_filename = gpx_filename.strip()
 #    
-    assert os.path.exists(gpx_filename), "I did not find the file at, "+str(gpx_filename)
+    assert os.path.exists(gpx_filename), "I did not find the file at, " + str(gpx_filename)
 #
     if gpx_filename == 'exit':
         return None
 #
     output_filename = raw_input("Enter the output file path; e.g., PATH/filename1.csv: ")
-    output_filename = output_filename.rstrip()
+    output_filename = output_filename.replace('\\', '')
+    output_filename = output_filename.replace('\'', '')
+    gpx_filename = gpx_filename.strip()
 #
     if output_filename == 'exit':
         return None
